@@ -19,7 +19,7 @@ llm = OpenLLM(server_url=server_url)
 
 # Clone
 repo_path = "/home/infres/mcaillard-23/test_starcoder" #folder corresponding of the source code for the RAG
-repo = Repo.clone_from("https://github.com/esphome/esphome", to_path=repo_path) #downloading the source code for the RAG
+#repo = Repo.clone_from("https://github.com/esphome/esphome", to_path=repo_path) #downloading the source code for the RAG
 
 
 # Load all python project files
