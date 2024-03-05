@@ -34,10 +34,10 @@ dataset_name = "Rtian/DebugBench"
 page_content_column = ("buggy_code" ,"solution", "solution_explanation")  # or any other column you're interested in
 
 # Create a loader instance
-loader = HuggingFaceDatasetLoader(dataset_name, page_content_column)
+data = load_dataset(dataset_name)
 
 # Load the data
-data = loader.load()
+#data = loader.load()
 
 # Create an instance of the RecursiveCharacterTextSplitter class with specific parameters.
 # It splits text into chunks of 1000 characters each with a 150-character overlap.
