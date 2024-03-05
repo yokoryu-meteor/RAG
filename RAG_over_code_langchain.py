@@ -30,10 +30,10 @@ from datasets import load_dataset
 #repo = Repo.clone_from("https://github.com/esphome/esphome", to_path=repo_path) #downloading the source code for the RAG
 # Specify the dataset name and the column containing the content
 dataset_name = "Rtian/DebugBench"
-page_content_column = "context"  # or any other column you're interested in
+# or any other column you're interested in
 
 # Create a loader instance
-loader = HuggingFaceDatasetLoader(dataset_name, page_content_column)
+loader = HuggingFaceDatasetLoader(dataset_name)
 
 # Load the data
 data = loader.load()
