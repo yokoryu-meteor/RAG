@@ -59,20 +59,22 @@ retriever = db.as_retriever(
 
 
 # Prompt
-template = """Use the context to answer the question.
+template = """Use the code and the problem to answer the question.
 If you don't know the answer, just say that you don't know, don't try to make up an answer. 
 Keep the answer as concise as possible. 
-{context}
+{code}
+{problem}
 Question: {question}
 Helpful Answer:"""
 QA_CHAIN_PROMPT = PromptTemplate(
-    input_variables=["context", "question"],
+    input_variables=["code","problem", "question"],
     template=template,
 )
 
 # Docs
+problem= "You are given a string word and an array of strings forbidden. A string is called valid if none of its substrings are present in forbidden. Return the length of the longest valid substring of the string word. A substring is a contiguous sequence of characters in a string, possibly empty."
 context = "class Solution: def longestValidSubstring(self, word: str, forbidden: List[str]) -> int: trie = {} for f in forbidden: t = trie for c in f: if c not in t: t[c] = {} t = t[c] t['end'] = True def isForbidden(s): t = trie counter = 0 for c in s: if c not in t: return False t = t[c] counter += 1 if 'end' in t: return counter return False res = 0 j = len(word) + 1 for i in range(len(word) - 1, -1, -1): truc = isForbidden(word[i:j]) if truc: j = i + truc - 1 res = max(res, j - i) return res"
-question = "Find and explain the bug in the code in the context. Then, propose a slightly modified code that solves this issue. You are given a string word and an array of strings forbidden. A string is called valid if none of its substrings are present in forbidden. Return the length of the longest valid substring of the string word. A substring is a contiguous sequence of characters in a string, possibly empty."
+question = "The code is supposed to answer the problem, but there is a bug. Find and explain why there is a bug. Then, propose a slightly modified code that solves this issue."
 docs = retriever.get_relevant_documents(question)
 # Chain
 chain = load_qa_chain(llm, chain_type="stuff", prompt=QA_CHAIN_PROMPT)
