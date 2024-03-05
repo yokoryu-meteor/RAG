@@ -34,17 +34,14 @@ dataset_name = "Rtian/DebugBench"
 page_content_column = ("buggy_code" ,"solution", "solution_explanation")  # or any other column you're interested in
 
 # Create a loader instance
-data = load_dataset(dataset_name)
 
 # Load the data
 #data = loader.load()
 
-# Create an instance of the RecursiveCharacterTextSplitter class with specific parameters.
-# It splits text into chunks of 1000 characters each with a 150-character overlap.
-text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=150)
+
+docs, test_ds = datasets.load_dataset('dataset_name', split=['train', 'test'])
 
 # 'data' holds the text you want to split, split the text into documents using the text splitter.
-docs = text_splitter.split_documents(data)
 
 
 # Load all python project files
