@@ -31,7 +31,7 @@ from datasets import load_dataset
 # Specify the dataset name and the column containing the content
 dataset_name = "Rtian/DebugBench"
 
-page_content_column = "solution_explanation"  # or any other column you're interested in
+page_content_column = ("buggy_code" ,"solution", "solution_explanation")  # or any other column you're interested in
 
 # Create a loader instance
 loader = HuggingFaceDatasetLoader(dataset_name, page_content_column)
