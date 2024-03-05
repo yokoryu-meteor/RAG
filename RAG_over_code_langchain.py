@@ -71,7 +71,7 @@ QA_CHAIN_PROMPT = PromptTemplate(
 )
 
 # Docs
-context = "class Solution: def longestValidSubstring(self, word: str, forbidden: List[str]) -> int: trie = {} for f in forbidden: t = trie for c in f: if c not in t: t[c] = {} t = t[c] t["end"] = True def isForbidden(s): t = trie counter = 0 for c in s: if c not in t: return False t = t[c] counter += 1 if "end" in t: return counter return False res = 0 j = len(word) + 1 for i in range(len(word) - 1, -1, -1): truc = isForbidden(word[i:j]) if truc: j = i + truc - 1 res = max(res, j - i) return res"
+context = "class Solution: def longestValidSubstring(self, word: str, forbidden: List[str]) -> int: trie = {} for f in forbidden: t = trie for c in f: if c not in t: t[c] = {} t = t[c] t['end'] = True def isForbidden(s): t = trie counter = 0 for c in s: if c not in t: return False t = t[c] counter += 1 if 'end' in t: return counter return False res = 0 j = len(word) + 1 for i in range(len(word) - 1, -1, -1): truc = isForbidden(word[i:j]) if truc: j = i + truc - 1 res = max(res, j - i) return res"
 question = "You are given a string word and an array of strings forbidden. A string is called valid if none of its substrings are present in forbidden. Return the length of the longest valid substring of the string word. A substring is a contiguous sequence of characters in a string, possibly empty."
 docs = retriever.get_relevant_documents(question)
 # Chain
