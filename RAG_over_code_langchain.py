@@ -16,7 +16,6 @@ from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.vectorstores import FAISS
 from transformers import AutoTokenizer, AutoModelForQuestionAnswering
 from transformers import AutoTokenizer, pipeline
-from langchain import HuggingFacePipeline
 
 torch.FloatTensor(0).to('cuda') #To change depending of the GPU you are using
 server_url = "http://localhost:3000"
@@ -39,7 +38,7 @@ page_content_column = ("buggy_code" ,"solution", "solution_explanation")  # or a
 #data = loader.load()
 
 
-docs, test_ds = datasets.load_dataset('dataset_name', split=['train', 'test'])
+docs, test_ds = load_dataset('dataset_name', split=['train', 'test'])
 
 # 'data' holds the text you want to split, split the text into documents using the text splitter.
 
