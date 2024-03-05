@@ -10,7 +10,13 @@ from langchain_community.document_loaders.parsers import LanguageParser
 from langchain_community.vectorstores import Chroma
 from langchain.prompts import PromptTemplate
 from langchain.chains.question_answering import load_qa_chain
-from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain.document_loaders import HuggingFaceDatasetLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.embeddings import HuggingFaceEmbeddings
+from langchain.vectorstores import FAISS
+from transformers import AutoTokenizer, AutoModelForQuestionAnswering
+from transformers import AutoTokenizer, pipeline
+from langchain import HuggingFacePipeline
 
 torch.FloatTensor(0).to('cuda') #To change depending of the GPU you are using
 server_url = "http://localhost:3000"
@@ -19,9 +25,25 @@ llm = OpenLLM(server_url=server_url)
 
 # Clone
 from datasets import load_dataset
-documents = load_dataset("Rtian/DebugBench")
+
 #repo_path = "/home/infres/yokoyama/test_DebugBench" #folder corresponding of the source code for the RAG
 #repo = Repo.clone_from("https://github.com/esphome/esphome", to_path=repo_path) #downloading the source code for the RAG
+# Specify the dataset name and the column containing the content
+dataset_name = "Rtian/DebugBench"
+page_content_column = "context"  # or any other column you're interested in
+
+# Create a loader instance
+loader = HuggingFaceDatasetLoader(dataset_name, page_content_column)
+
+# Load the data
+data = loader.load()
+
+# Create an instance of the RecursiveCharacterTextSplitter class with specific parameters.
+# It splits text into chunks of 1000 characters each with a 150-character overlap.
+text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=150)
+
+# 'data' holds the text you want to split, split the text into documents using the text splitter.
+docs = text_splitter.split_documents(data)
 
 
 # Load all python project files
@@ -37,23 +59,34 @@ documents = load_dataset("Rtian/DebugBench")
 documents = loader.load()"""
 
 
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+"""from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 python_splitter = RecursiveCharacterTextSplitter.from_language(
     language=Language.PYTHON, chunk_size=2000, chunk_overlap=200
 )
-
+"""
 #Split the Document into chunks for embedding and vector storage.
-texts = python_splitter.split_documents(documents)
+#texts = python_splitter.split_documents(documents)
 
-# embed and save in vector_store
-sentence_t5_base = "sentence-transformers/sentence-t5-base"
+# Define the path to the pre-trained model you want to use
+modelPath = "sentence-transformers/all-MiniLM-l6-v2"
+
+# Create a dictionary with model configuration options, specifying to use the CPU for computations
+model_kwargs = {'device':'cpu'}
+
+# Create a dictionary with encoding options, specifically setting 'normalize_embeddings' to False
+encode_kwargs = {'normalize_embeddings': False}
+
+# Initialize an instance of HuggingFaceEmbeddings with the specified parameters
 embeddings = HuggingFaceEmbeddings(
-    model_name=sentence_t5_base,
-    encode_kwargs={"normalize_embeddings": True},
-    model_kwargs={"device": "cuda"},
-            )
-db = Chroma.from_documents(texts, embeddings)
+    model_name=modelPath,     # Provide the pre-trained model's path
+    model_kwargs=model_kwargs, # Pass the model configuration options
+    encode_kwargs=encode_kwargs # Pass the encoding options
+)
+
+
+db = FAISS.from_documents(docs, embeddings)
+
 retriever = db.as_retriever(
     search_type="mmr",  # Also test "similarity"
     search_kwargs={"k": 8},
