@@ -38,7 +38,7 @@ page_content_column = ("buggy_code" ,"solution", "solution_explanation")  # or a
 #data = loader.load()
 
 
-docs, test_ds = load_dataset(dataset_name, split=['train', 'test'])
+docs = load_dataset(dataset_name)
 
 # 'data' holds the text you want to split, split the text into documents using the text splitter.
 
