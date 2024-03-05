@@ -30,18 +30,21 @@ from datasets import load_dataset
 # Specify the dataset name and the column containing the content
 dataset_name = "Rtian/DebugBench"
 
-page_content_column = ("buggy_code" ,"solution", "solution_explanation")  # or any other column you're interested in
+page_content_column = "solution"  # or any other column you're interested in
 
 # Create a loader instance
-
+loader = HuggingFaceDatasetLoader(dataset_name, page_content_column)
 # Load the data
-#data = loader.load()
+data = loader.load()
 
 
-docs = load_dataset(dataset_name)
+
 
 # 'data' holds the text you want to split, split the text into documents using the text splitter.
+text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=150)
 
+# 'data' holds the text you want to split, split the text into documents using the text splitter.
+docs = text_splitter.split_documents(data)
 
 # Load all python project files
 """loader = GenericLoader.from_filesystem(
